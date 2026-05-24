@@ -1,0 +1,39 @@
+{
+  "name": "my-superpowers-md",
+  "version": "0.2.0",
+  "description": "Skill for creating or updating CLAUDE.md and AGENTS.md with evidence-first merge rules.",
+  "author": {
+    "name": "zpis666",
+    "email": "1931662166@qq.com",
+    "url": "https://github.com/zpis666"
+  },
+  "homepage": "https://github.com/zpis666/my-superpowers-md",
+  "repository": "https://github.com/zpis666/my-superpowers-md",
+  "license": "MIT",
+  "keywords": [
+    "claude-md",
+    "agents-md",
+    "instruction-files",
+    "merge",
+    "evidence-first",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "My Superpowers Md",
+    "shortDescription": "Create or merge CLAUDE.md and AGENTS.md with stronger evidence-first rules.",
+    "longDescription": "Use this plugin when creating or updating repository instruction files such as CLAUDE.md or AGENTS.md, especially when existing guidance must be preserved and user-provided PDFs, original wording, and real data must outrank agent-authored rewrites.",
+    "developerName": "zpis666",
+    "category": "Coding",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Update this repository's AGENTS.md without overwriting existing repo-specific rules.",
+      "Merge my CLAUDE.md with the current repo instructions and preserve original wording.",
+      "Create a new AGENTS.md from the user's existing PDF and instruction notes."
+    ],
+    "websiteURL": "https://github.com/zpis666/my-superpowers-md"
+  }
+}
