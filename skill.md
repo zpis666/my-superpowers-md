@@ -1,100 +1,117 @@
 ---
 name: my-superpowers-md
-description: Use when creating or optimizing CLAUDE.md / agents.md for a project — checks existing files, creates from template or merges intelligently
+description: Use when creating or updating a repository instruction file such as CLAUDE.md or AGENTS.md, especially when existing guidance must be merged carefully instead of overwritten with a generic template.
 ---
 
 # my-superpowers-md
 
-为目标项目创建或合并 `CLAUDE.md` / `agents.md`。模板基于 Karpathy 核心原则，以单一约束表整合行为规范。
+Create or update a repository instruction file for the current agent environment.
 
-## 工作流
+The goal is to produce a practical instruction file that matches the real project, preserves useful existing guidance, and fills only the missing pieces.
 
-```dot
-digraph flow {
-    "检查目标目录" [shape=box];
-    "已有 CLAUDE.md/agents.md?" [shape=diamond];
-    "创建模式" [shape=box];
-    "合并模式" [shape=box];
-    "输出文件" [shape=box];
+## When to Use
 
-    "检查目标目录" -> "已有 CLAUDE.md/agents.md?";
-    "已有 CLAUDE.md/agents.md?" -> "创建模式" [label="无"];
-    "已有 CLAUDE.md/agents.md?" -> "合并模式" [label="有"];
-    "创建模式" -> "输出文件";
-    "合并模式" -> "输出文件";
-}
-```
+- Need to initialize a new `CLAUDE.md` or `AGENTS.md`
+- Need to merge an existing instruction file with a house style or template
+- Need to turn project conventions into explicit agent rules
+- Need to preserve existing repo-specific guidance while adding missing sections
 
-## 创建模式
+Do not use when:
 
-目标目录无 `CLAUDE.md` / `agents.md` 时执行：
+- The user only wants a tiny manual edit to an existing file
+- The repo already has the right file and the request is unrelated to instruction-file design
 
-1. 用引导式提问收集项目信息（见下方"引导式提问"）
-2. 基于模板生成文件
-3. 输出文件名：Claude Code → `CLAUDE.md`，Codex/OpenCode/Hermes → `agents.md`
+## Output Rules
 
-## 合并模式
+- Claude Code: prefer `CLAUDE.md`
+- Codex: prefer `AGENTS.md`
+- If the repo already uses a different casing or existing target file, update that file instead of creating a duplicate
+- Never overwrite an existing instruction file silently
 
-目标目录已有文件时执行：
+## Workflow
 
-1. 逐模块分析已有文件
-2. 与模板模块对比
-3. 不冲突 → 保留已有内容
-4. 冲突 → 列出差异，让用户选择
-5. 缺失 → 从模板补充
-6. 输出文件名遵循目标 agent 命名约定
+1. Inspect the repo root for existing instruction files such as `CLAUDE.md`, `AGENTS.md`, and `agents.md`
+2. Decide mode:
+   - Create mode: no target file exists
+   - Merge mode: a target file already exists
+3. Reuse the strongest available evidence first: user-provided test data, real data, PDFs, original wording, and existing instruction-file text all outrank agent-authored rewrites
+4. Gather only the missing high-signal project information; if critical facts or wording are missing, ask the user before drafting
+5. Draft the instruction file using the template below as a starting point, but do not carefully author new rules or polished wording when stronger source material already exists
+6. In merge mode, preserve non-conflicting existing guidance, keep repo-specific wording when it is already usable, and surface real conflicts to the user
+7. Write the chosen target file
 
-## 引导式提问
+## Guided Questions
 
-应用模板时，主动向用户询问：
+Ask only for information that is missing and materially affects the file:
 
-- 用户背景/角色
-- 项目技术栈和开发命令（安装、测试、启动、构建）
-- 项目架构概览（核心模块、数据流、关键依赖）
+- User background or role
+- Project purpose and scope boundary
+- Tech stack
+- Common commands: install, run, test, build
+- Directory structure and key modules
+- Coding conventions or collaboration constraints
+- Verification expectations before claiming completion
+- Missing facts or original wording when the user already has PDFs, existing instruction files, notes, or other stronger source material
 
-## 模板
+## Create Mode
 
-生成的文件结构如下：
+- Start from the template below
+- Keep only sections that are relevant to the project
+- Prefer concrete repo-specific rules over abstract advice
+- Use real commands and real paths when available
+
+## Merge Mode
+
+- Read the existing instruction file completely before editing
+- Keep project-specific rules that do not conflict with the new structure
+- Add missing sections from the template only where they improve clarity
+- If two rules conflict, explain the difference and ask the user which one should win
+- Do not rewrite unrelated sections just for style consistency
+- Strongly prefer reusing the user's existing test data, real data, PDFs, original wording, and existing instruction-file text over agent-authored rewrites
+- If stronger source material exists but is incomplete, ask the user for the missing facts instead of carefully inventing or polishing new content
+- Do not carefully author factual, behavioral, or biographical details without user permission when stronger source material is absent
+
+## Template
 
 ```markdown
-# CLAUDE.md
+# {CLAUDE.md or AGENTS.md}
 
-本文档为强制性规范，非建议性指南。
+## Communication
+- Preferred language
+- Terminology expectations
 
-## 交流规范
+## Working Style
+- Planning and clarification rules
+- Scope-control rules
+- Minimal-change preference
 
-- 必须使用中文交流
-- 英文术语必须后附中文解释，例如：`background_color-背景颜色`、`callback function-回调函数`
+## Verification
+- Required checks before claiming completion
 
-## 执行策略
+## Project Context
+- User background
+- Repo or product purpose
 
-- 每次行动前，必须先检索当前可用的 skills，寻找匹配的 skill 提高执行质量
-- 可并行的任务，必须派出多个 sub-agent 并行完成
-- 主 agent 完成任务时，必须自动回收所有 sub-agent，清理临时文件，不留悬空进程
-- 禁止在未完成回收的情况下结束任务
-
-## 行为约束表
-
-| 原则 | 必须做 | 禁止做 | 验证方式 |
-|------|--------|--------|----------|
-| 编码前思考 | 明确假设；列出多种解读；提出更简方案 | 不确定时自行假设 | 假设是否已列出？ |
-| 简洁优先 | 最少代码解决 | 超需求功能；单次使用抽象；推测性代码 | 行数是否最少？ |
-| 外科手术式修改 | 只改必须改的；匹配风格；清理自己的孤立代码 | 改动未要求的相邻代码 | 每行修改可追溯？ |
-| 目标驱动执行 | 定义可验证目标；多步骤先陈述计划 | 未定义标准就执行 | 成功标准明确？ |
-| 测试约束 | 使用真实数据 | 假设测试数据 | 数据来源真实？ |
-| 子代理管理 | 完成时全部回收 | 留悬空进程 | 有未回收子代理？ |
-| 需求确认 | 理解后再动手 | 未明确需求就编码 | 需求已确认？ |
-| 复用优先 | 复杂任务先搜索开源工具/社区方案；有成熟方案直接采用 | 有现成方案仍重复造轮子 | 是否已搜索现有方案？ |
-
-## 用户背景
-
-<!-- 引导式提问填充 -->
-
-## 开发命令
-
-<!-- 引导式提问填充 -->
-
-## 架构概览
-
-<!-- 引导式提问填充 -->
+## Development Commands
+```bash
+# install
+# run
+# test
+# build
 ```
+
+## Architecture Notes
+- Key folders
+- Important dependencies
+- Risky areas
+```
+
+## Common Mistakes
+
+- Blindly overwriting existing repo guidance
+- Keeping generic template filler that does not match the repo
+- Adding process rules the user did not ask for
+- Creating duplicate instruction files because the filename choice was not checked first
+- Rewriting user-provided wording when a PDF, original text, or existing instruction file already contains usable language
+- Polishing or elaborating factual content without first checking whether the user already has stronger source material
+- Carefully drafting details from memory when missing facts should have been confirmed with the user

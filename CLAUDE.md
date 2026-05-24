@@ -4,16 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-本仓库致力于**一次性、高效、约束性强**的 `CLAUDE.md` / `agents.md` 文件创建。产出物为基于 Karpathy 核心原则的行为规范模板，供其他项目直接采用。
+本仓库致力于**一次性、高效、约束性强**的 `CLAUDE.md` / `AGENTS.md` 文件创建与合并。产出物强调证据优先：用户已有测试数据、真实数据、PDF、原文和现成表述优先于 agent 自行改写。
 
 ## 核心工作流
 
 本仓库的主要任务是为用户的目标项目生成定制化的 `CLAUDE.md`。执行流程：
 
-1. **收集信息** — 询问用户的目标项目技术栈、开发命令、架构特点
-2. **基于模板** — 以 `CLAUDE-template.md` 为骨架
-3. **填充定制** — 将占位符替换为项目实际信息
-4. **输出文件** — 生成可直接使用的 `CLAUDE.md`
+1. **检查现有材料** — 优先读取已有 `CLAUDE.md` / `AGENTS.md`、PDF、原文、真实数据与现成表述
+2. **收集缺失信息** — 仅对缺失的项目技术栈、开发命令、架构特点等进行提问
+3. **基于模板** — 以 `CLAUDE-template.md` 为骨架
+4. **最小定制** — 优先复用已有 wording，仅补缺失规则
+5. **输出文件** — 生成可直接使用的 `CLAUDE.md` 或 `AGENTS.md`
 
 ## 模板修改原则
 
